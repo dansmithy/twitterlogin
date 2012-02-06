@@ -62,7 +62,6 @@
                         </goals>
                         <configuration>
                             <assembleDirectory>target</assembleDirectory>
-                            <generateRepository>false</generateRepository>
                             <programs>
                                 <program>
                                     <mainClass>com.github.dansmithy.twitterlogin.TwitterLoginStart</mainClass>
