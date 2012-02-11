@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
@@ -15,10 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 public class LoginServlet extends HttpServlet {
@@ -27,15 +27,17 @@ public class LoginServlet extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpPost method = new HttpPost("https://api.twitter.com/oauth/request_token");
-        method.addHeader("Authorization", createAuthorizationHeader());
-        //        System.out.println(createAuthorizationHeader());
-        //        HttpResponse twitResponse = createClientWithProxy("172.16.42.42", 8080).execute(method);
+        String authorizationHeader = createAuthorizationHeader();
+        method.addHeader("Authorization", authorizationHeader);
+        System.out.println(authorizationHeader);
+//        HttpResponse twitResponse = createClientWithProxy("172.16.42.42", 8080).execute(method);
+//        System.out.println(twitResponse.getStatusLine().toString());
+        System.out.println("done");
     }
 
     private String createAuthorizationHeader() throws UnsupportedEncodingException {
 
         String consumerKey = "nYOW3tE8e96R7px104ez1w";
-        String signature = "";
         String signatureMethod = "HMAC-SHA1";
         String nonce = UUID.randomUUID().toString().replaceAll("-", "");
         String callback = "http://twitterlogin.herokuapp.com/twitterCallback";
@@ -50,10 +52,13 @@ public class LoginServlet extends HttpServlet {
         oauthParams.add(new OauthParam("oauth_timestamp", timestamp));
         oauthParams.add(new OauthParam("oauth_version", oauthVersion));
 
-        System.out.println(oauthParams.createSignatureBaseString("POST", "https://api.twitter.com/oauth/request_token"));
-
-        //        oauthParams.add(new OauthParam("oauth_signature", signature));
-        return String.format("OAuth oauth_callback=\"%s\", oauth_consumer_key=\"%s\", oauth_nonce=\"%s\", oauth_signature=\"%s\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"%d\", oauth_version=\"1.0\"", callback, consumerKey, nonce, signature, new Date().getTime());
+        String signatureBaseString = oauthParams.createSignatureBaseString("POST", "https://api.twitter.com/oauth/request_token");
+        String consumerSecret = "";
+        String signingKey = consumerSecret + "&";
+        String signature = Signature.calculateRFC2104HMAC(signatureBaseString, signingKey);
+        oauthParams.add(new OauthParam("oauth_signature", signature));
+        
+        return oauthParams.createOathString();
     }
 
     /**
@@ -61,8 +66,8 @@ public class LoginServlet extends HttpServlet {
      */
     private HttpClient createClientWithProxy(String proxyHost, int port) {
         HttpClient client = new DefaultHttpClient();
-        HttpHost proxy = new HttpHost(proxyHost, port);
-        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+//        HttpHost proxy = new HttpHost(proxyHost, port);
+//        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
         return client;
     }
 
@@ -78,16 +83,29 @@ public class LoginServlet extends HttpServlet {
         }
 
         public String createSignatureParamString() {
+        	System.out.println("**** create pama string ****");
             List<String> signatureValues = new ArrayList<String>();
+//            List<OauthParam> params = new ArrayList<OauthParam>(this);
+//            Collections.sort(params);
             for (OauthParam param : this) {
+            	System.out.println(param);
                 signatureValues.add(param.toSignatureString());
             }
             return StringUtils.join(signatureValues, "&");
         }
 
         public String createSignatureBaseString(String method, String url) {
-
             return String.format("%s&%s&%s", method.toUpperCase(), urlEncode(url), createSignatureParamString());
+        }
+        
+        public String createOathString() {
+        	System.out.println("**** create oauth string ****");
+            List<String> signatureValues = new ArrayList<String>();
+            for (OauthParam param : this) {
+            	System.out.println(param);
+                signatureValues.add(param.toOutputString());
+            }
+            return "OAuth " + StringUtils.join(signatureValues, ", ");        	
         }
 
     }
@@ -110,6 +128,10 @@ public class LoginServlet extends HttpServlet {
             return value;
         }
 
+        public String toString() {
+        	return toOutputString();
+        }
+        
         public String toOutputString() {
             return String.format("%s=\"%s\"", key, value);
         }
