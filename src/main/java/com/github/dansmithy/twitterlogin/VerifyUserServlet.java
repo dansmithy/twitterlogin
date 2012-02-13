@@ -29,7 +29,7 @@ public class VerifyUserServlet extends HttpServlet {
 					.apiKey("nYOW3tE8e96R7px104ez1w")
 					.apiSecret(new SecretStore().getConsumerKey())
 					.callback(
-							"http://localhost:8086/twitterCallback")
+							"http://twitterlogin.herokuapp.com/twitterCallback")
 					.build();
 
 			Token requestToken = service.getRequestToken();
