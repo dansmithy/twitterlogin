@@ -36,6 +36,7 @@ public class Signature {
 
 			// base64-encode the hmac
 			result = Base64.encodeBase64String(rawHmac);
+			result = result.substring(0, result.length()-2);
 
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to generate HMAC : "
