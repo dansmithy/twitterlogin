@@ -23,13 +23,10 @@ public class TwitterLoginStart {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         server.setHandler(context);
-        //         DelegatingFilterProxy filterProxy = new DelegatingFilterProxy();
-        //         filterProxy.setTargetBeanName("springSecurityFilterChain");
-        //         context.addFilter(new FilterHolder(filterProxy), "/*", FilterMapping.DEFAULT);
-        //        context.addEventListener(new ResteasyBootstrap());
-        //        context.addEventListener(new SpringContextLoaderListener());
-        //        context.addServlet(HttpServletDispatcher.class, "/ws/*");
-        context.addServlet(SimpleServlet.class, "/twitter/*");
+        context.addServlet(VerifyUserServlet.class, "/loginDetails/*");
+        context.addServlet(TwitterCallback.class, "/twitterCallback/*");
+        context.addServlet(LogoutServlet.class, "/j_spring_security_logout");
+        context.addServlet(SimpleServlet.class, "/simple/*");
         context.setWar("src/main/webapp");
         server.start();
         server.join();
