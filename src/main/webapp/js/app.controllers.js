@@ -8,7 +8,6 @@ function MainController($route, $xhr, userManager) {
 	$xhr.defaults.headers.common["Content-Type"] = "application/json";
 	
 	this.checkLoggedIn();	
-	this.authenticationUrl = "";
 }
 
 MainController.$inject = ["$route", "$xhr", "userManager" ];
@@ -37,7 +36,6 @@ MainController.prototype = {
 				this.userManager.unauthenticated("Unknown username and/or password");
 			} else {
 				this.userManager.unauthenticated();
-				this.authenticationUrl = response.authorizationUrl;
 			}
 		},
 		

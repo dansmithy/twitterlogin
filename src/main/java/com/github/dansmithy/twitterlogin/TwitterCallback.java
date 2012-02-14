@@ -36,10 +36,7 @@ public class TwitterCallback extends HttpServlet {
 		}
 		String oauthToken = request.getParameter("oauth_token");
 		String oauthVerifier = request.getParameter("oauth_verifier");
-		OAuthService service = new ServiceBuilder().provider(TwitterApi.class)
-				.apiKey("nYOW3tE8e96R7px104ez1w")
-				.apiSecret(new SecretStore().getConsumerKey())
-				.build();
+		OAuthService service = TwitterService.INSTANCE.getService();
 
 		Token requestToken = (Token)session.getAttribute("request_token");
 		Token accessToken = service.getAccessToken(requestToken, new Verifier(oauthVerifier));
