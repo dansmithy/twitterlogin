@@ -41,7 +41,13 @@
         <a ng:show="userManager.isVerifiedButUnauthenticated()" href="/beginTwitterLogin"><img src="images/sign-in-with-twitter.png" alt="Sign in with Twitter" /></a>
         <p ng:show="userManager.isAuthenticated()">Congratulations, <strong>{{userManager.user.username}}</strong>, you have logged in!</p>
       </div>    
-        
+      
+      <div class="row" ng:show="userManager.isAuthenticated()">
+        <div class="span12">
+            <input name="messageText" type="text" size="140" maxlength="140" />
+            <a ng:href="/postMessage?message={{messageText}}">Send message</a>
+        </div>
+      </div>
     </div>
   </body>
 </html>

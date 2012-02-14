@@ -27,6 +27,7 @@ public class TwitterLoginStart {
         context.addServlet(StartAuthenticationServlet.class, "/beginTwitterLogin/*");
         context.addServlet(TwitterCallback.class, "/twitterCallback/*");
         context.addServlet(LogoutServlet.class, "/j_spring_security_logout");
+        context.addServlet(SendMessageServlet.class, "/postMessage");
         context.addServlet(SimpleServlet.class, "/simple/*");
         context.setWar("src/main/webapp");
         server.start();

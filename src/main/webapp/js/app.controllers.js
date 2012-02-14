@@ -42,6 +42,6 @@ MainController.prototype = {
 		logout : function() {
 			this.userManager.unauthenticated();
 			this.$xhr("GET", "j_spring_security_logout", angular.noop);
-		}
+		},
 		
 };
