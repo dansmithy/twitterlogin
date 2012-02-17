@@ -18,7 +18,7 @@
     <aop:aspectj-autoproxy />
 
     <bean id="forbiddenEntryPoint"
-        class="com.github.dansmithy.twitterlogin.rest.beans.JsonResponseHttp403AuthenticationEntryPoint" />
+        class="com.github.dansmithy.twitterlogin.service.springsecurity.JsonResponseHttp403AuthenticationEntryPoint" />
 
     <sec:authentication-manager alias="authenticationManager">
         <sec:authentication-provider>
