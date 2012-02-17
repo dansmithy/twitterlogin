@@ -17,24 +17,21 @@
 
     <aop:aspectj-autoproxy />
 
+
+    <!-- Security -->
+    <sec:global-method-security jsr250-annotations="enabled" />
+    <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true">
+        <sec:intercept-url pattern="/**" access="permitAll" />
+    </sec:http>
+
     <bean id="forbiddenEntryPoint"
         class="com.github.dansmithy.twitterlogin.service.springsecurity.JsonResponseHttp403AuthenticationEntryPoint" />
 
-    <sec:authentication-manager alias="authenticationManager">
-        <sec:authentication-provider>
-            <sec:user-service>
-                <sec:user name="jimi" password="jimispassword"
-                    authorities="ROLE_USER, ROLE_ADMIN" />
-            </sec:user-service>
-        </sec:authentication-provider>
-    </sec:authentication-manager>
-
-    <sec:global-method-security
-        jsr250-annotations="enabled" />
-    <sec:http entry-point-ref="forbiddenEntryPoint"
-        use-expressions="true">
-        <sec:logout />
-        <sec:intercept-url pattern="/**" access="permitAll" />
-    </sec:http>
+    <bean id="org.springframework.security.authenticationManager"
+        class="org.springframework.security.authentication.ProviderManager">
+        <property name="providers">
+            <bean class="com.github.dansmithy.twitterlogin.service.springsecurity.DummyAuthenticationProvider" />
+        </property>
+    </bean>
 
 </beans>
