@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import com.github.dansmithy.twitterlogin.rest.beans.TwitterUser;
+import com.github.dansmithy.twitterlogin.model.TwitterUser;
 
 @Path("/ws/auth")
 public interface AuthenticationResource {

@@ -1,4 +1,4 @@
-package com.github.dansmithy.twitterlogin.rest.beans;
+package com.github.dansmithy.twitterlogin.model;
 
 public class JsonError {
 
@@ -19,5 +19,8 @@ public class JsonError {
 		return code;
 	}
 
+	public String toJsonString() {
+		return String.format("{ \"message\" : \"%s\", \"code\" : \"%s\" }", message, code);
+	}
 	
 }

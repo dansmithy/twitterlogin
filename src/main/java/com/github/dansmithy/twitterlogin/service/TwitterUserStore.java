@@ -1,6 +1,6 @@
 package com.github.dansmithy.twitterlogin.service;
 
-import com.github.dansmithy.twitterlogin.rest.beans.TwitterUser;
+import com.github.dansmithy.twitterlogin.model.TwitterUser;
 
 public interface TwitterUserStore {
 

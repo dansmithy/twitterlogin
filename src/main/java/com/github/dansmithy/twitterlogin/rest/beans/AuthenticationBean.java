@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.Response;
 
+import com.github.dansmithy.twitterlogin.model.TwitterUser;
 import com.github.dansmithy.twitterlogin.rest.jaxrs.AuthenticationResource;
 import com.github.dansmithy.twitterlogin.service.TwitterService;
 

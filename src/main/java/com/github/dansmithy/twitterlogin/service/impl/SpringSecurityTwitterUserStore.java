@@ -6,7 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.github.dansmithy.twitterlogin.rest.beans.TwitterUser;
+import com.github.dansmithy.twitterlogin.model.TwitterUser;
 import com.github.dansmithy.twitterlogin.service.TwitterUserStore;
 
 @Named

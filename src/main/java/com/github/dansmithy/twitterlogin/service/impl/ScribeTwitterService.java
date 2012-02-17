@@ -15,7 +15,7 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
-import com.github.dansmithy.twitterlogin.rest.beans.TwitterUser;
+import com.github.dansmithy.twitterlogin.model.TwitterUser;
 import com.github.dansmithy.twitterlogin.service.SecretStore;
 import com.github.dansmithy.twitterlogin.service.TwitterService;
 import com.github.dansmithy.twitterlogin.service.TwitterUserStore;

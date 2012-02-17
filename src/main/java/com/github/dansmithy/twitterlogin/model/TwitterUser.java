@@ -1,4 +1,4 @@
-package com.github.dansmithy.twitterlogin.rest.beans;
+package com.github.dansmithy.twitterlogin.model;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,17 +16,29 @@ import com.google.common.collect.Collections2;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TwitterUser implements UserDetails {
 
+	public static TwitterUser EMPTY_USER = new TwitterUser(null, null, new String[0]);
+	
+	public static String ROLE_USER = "user";
+	public static String ROLE_ADMIN = "admin";
+	
+	private static String[] DEFAULT_ROLES = new String[] { ROLE_USER };
+	
 	private String username;
 	private Token accessToken;
-	private String[] roles = { "user" };
+	private final String[] roles;
 
-	public static TwitterUser EMPTY_USER = new TwitterUser(null, null);
 	
 	public TwitterUser(String username, Token accessToken) {
+		this(username, accessToken, DEFAULT_ROLES);
+	}
+	
+	public TwitterUser(String username, Token accessToken, String[] roles) {
 		super();
 		this.username = username;
 		this.accessToken = accessToken;
+		this.roles = roles;
 	}
+	
 
 	@JsonIgnore
 	@Override
