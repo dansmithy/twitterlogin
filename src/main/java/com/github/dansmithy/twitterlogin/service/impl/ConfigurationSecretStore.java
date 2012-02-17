@@ -1,16 +1,24 @@
-package com.github.dansmithy.twitterlogin;
+package com.github.dansmithy.twitterlogin.service.impl;
 
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Named;
+
 import org.apache.commons.io.FileUtils;
 
+import com.github.dansmithy.twitterlogin.service.SecretStore;
 import com.google.common.base.Objects;
 
-public class SecretStore {
+@Named
+public class ConfigurationSecretStore implements SecretStore {
 
 	private static final String ENVIRONMENT_PROEPRTY = "twitter_consumer_key";
 	
+	/* (non-Javadoc)
+	 * @see com.github.dansmithy.twitterlogin.service.impl.SecretStore#getConsumerKey()
+	 */
+	@Override
 	public String getConsumerKey() {
 		String environmentValue = System.getenv(ENVIRONMENT_PROEPRTY);
 		String filesystemValue = getFilesystemValue();
@@ -31,9 +39,4 @@ public class SecretStore {
 		}
 	}
 
-	public static void main(String[] args) {
-		System.out.println(new SecretStore().getConsumerKey());
-	}
-	
-	
 }

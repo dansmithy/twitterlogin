@@ -2,7 +2,13 @@ package com.github.dansmithy.twitterlogin;
 
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap;
+import org.jboss.resteasy.plugins.spring.SpringContextLoaderListener;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
  * Debug class used for running jetty within Eclipse.
@@ -23,12 +29,12 @@ public class TwitterLoginStart {
         WebAppContext context = new WebAppContext();
         context.setContextPath("/");
         server.setHandler(context);
-        context.addServlet(GetUserServlet.class, "/loginDetails/*");
-        context.addServlet(StartAuthenticationServlet.class, "/beginTwitterLogin/*");
-        context.addServlet(TwitterCallback.class, "/twitterCallback/*");
-        context.addServlet(LogoutServlet.class, "/j_spring_security_logout");
-        context.addServlet(SendMessageServlet.class, "/postMessage");
-        context.addServlet(SimpleServlet.class, "/simple/*");
+        DelegatingFilterProxy filterProxy = new DelegatingFilterProxy();
+        filterProxy.setTargetBeanName("springSecurityFilterChain");
+        context.addFilter(new FilterHolder(filterProxy), "/*", FilterMapping.DEFAULT);
+        context.addEventListener(new ResteasyBootstrap());
+        context.addEventListener(new SpringContextLoaderListener());
+        context.addServlet(HttpServletDispatcher.class, "/ws/*");
         context.setWar("src/main/webapp");
         server.start();
         server.join();

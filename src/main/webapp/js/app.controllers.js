@@ -15,7 +15,7 @@ MainController.$inject = ["$route", "$xhr", "userManager" ];
 MainController.prototype = {
 
 		checkLoggedIn : function() {
-			this.$xhr("GET", "loginDetails?" + new Date().getTime(), this.authenticationCallback);
+			this.$xhr("GET", "/ws/auth/user?" + new Date().getTime(), this.authenticationCallback);
 		},
 		
 		login : function() {

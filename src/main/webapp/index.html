@@ -38,7 +38,7 @@
       <div class="hero-unit">
         <h1>Welcome to Twitter Login</h1>
         <p>&nbsp;</p>
-        <a ng:show="userManager.isVerifiedButUnauthenticated()" href="/beginTwitterLogin"><img src="images/sign-in-with-twitter.png" alt="Sign in with Twitter" /></a>
+        <a ng:show="userManager.isVerifiedButUnauthenticated()" href="/ws/auth/authToken"><img src="images/sign-in-with-twitter.png" alt="Sign in with Twitter" /></a>
         <p ng:show="userManager.isAuthenticated()">Congratulations, <strong>{{userManager.user.username}}</strong>, you have logged in!</p>
       </div>    
       
