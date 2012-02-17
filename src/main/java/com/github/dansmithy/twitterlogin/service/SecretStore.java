@@ -4,4 +4,6 @@ public interface SecretStore {
 
 	String getConsumerKey();
 
+	String getBaseUrl();
+
 }

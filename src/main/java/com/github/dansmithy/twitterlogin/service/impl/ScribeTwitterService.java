@@ -26,7 +26,7 @@ import com.github.dansmithy.twitterlogin.service.exception.TwitterAuthRuntimeExc
 public class ScribeTwitterService implements TwitterService {
 
 	private static final String TWITTER_CONSUMER_KEY = "nYOW3tE8e96R7px104ez1w";
-	private static final String TWITTER_CALLBACK_URL = "http://localhost:8086/ws/auth/authValidate";
+	private static final String TWITTER_CALLBACK_URL = "/ws/auth/authValidate";
 
 	private static final Pattern SCREEN_NAME_REGEX = Pattern.compile("screen_name=([^&]+)");
 
@@ -45,8 +45,7 @@ public class ScribeTwitterService implements TwitterService {
 		this.twitterUserStore = twitterUserStore;
 		this.roleProvider = roleProvider;
 		this.oauthService = new ServiceBuilder().provider(TwitterApi.Authenticate.class).apiKey(TWITTER_CONSUMER_KEY)
-				.apiSecret(secretStore.getConsumerKey()).callback(TWITTER_CALLBACK_URL).build();
-
+				.apiSecret(secretStore.getConsumerKey()).callback(createCallback(secretStore.getBaseUrl(), TWITTER_CALLBACK_URL)).build();
 	}
 
 	@Override
@@ -87,4 +86,9 @@ public class ScribeTwitterService implements TwitterService {
 			throw new TwitterAuthRuntimeException("Response body is incorrect. Can't extract details from response", null);
 		}
 	}
+	
+	private String createCallback(String hostname, String callbackUrl) {
+		return hostname + callbackUrl;
+	}
+	
 }
