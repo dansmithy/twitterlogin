@@ -18,8 +18,8 @@ public class TwitterUser implements UserDetails {
 
 	public static TwitterUser EMPTY_USER = new TwitterUser(null, null, new String[0]);
 	
-	public static String ROLE_USER = "user";
-	public static String ROLE_ADMIN = "admin";
+	public static final String ROLE_USER = "user";
+	public static final String ROLE_ADMIN = "admin";
 	
 	private static String[] DEFAULT_ROLES = new String[] { ROLE_USER };
 	

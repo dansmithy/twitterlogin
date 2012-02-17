@@ -16,6 +16,7 @@ import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
 import com.github.dansmithy.twitterlogin.model.TwitterUser;
+import com.github.dansmithy.twitterlogin.service.RoleProvider;
 import com.github.dansmithy.twitterlogin.service.SecretStore;
 import com.github.dansmithy.twitterlogin.service.TwitterService;
 import com.github.dansmithy.twitterlogin.service.TwitterUserStore;
@@ -36,11 +37,13 @@ public class ScribeTwitterService implements TwitterService {
 	 * This needs improving. Either put a single token in the session, or expire these tokens.
 	 */
 	private Map<String, Token> tokens = new HashMap<String, Token>();
+	private final RoleProvider roleProvider;
 
 	@Inject
-	public ScribeTwitterService(TwitterUserStore twitterUserStore, SecretStore secretStore) {
+	public ScribeTwitterService(TwitterUserStore twitterUserStore, SecretStore secretStore, RoleProvider roleProvider) {
 		super();
 		this.twitterUserStore = twitterUserStore;
+		this.roleProvider = roleProvider;
 		this.oauthService = new ServiceBuilder().provider(TwitterApi.Authenticate.class).apiKey(TWITTER_CONSUMER_KEY)
 				.apiSecret(secretStore.getConsumerKey()).callback(TWITTER_CALLBACK_URL).build();
 
@@ -61,7 +64,7 @@ public class ScribeTwitterService implements TwitterService {
 		Token requestToken = tokens.get(tokenKey);
 		Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
 		String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
-		TwitterUser twitterUser = new TwitterUser(screenName, accessToken);
+		TwitterUser twitterUser = new TwitterUser(screenName, accessToken, roleProvider.getRolesForUser(screenName));
 		twitterUserStore.setCurrentUser(twitterUser);
 	}
 
