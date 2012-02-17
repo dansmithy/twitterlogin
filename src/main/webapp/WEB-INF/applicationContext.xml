@@ -22,6 +22,7 @@
     <sec:global-method-security jsr250-annotations="enabled" />
     <sec:http entry-point-ref="forbiddenEntryPoint" use-expressions="true">
         <sec:intercept-url pattern="/**" access="permitAll" />
+        <sec:logout/>
     </sec:http>
 
     <bean id="forbiddenEntryPoint"
