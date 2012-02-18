@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.scribe.builder.ServiceBuilder;
-import org.scribe.builder.api.TwitterApi;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
@@ -21,6 +20,7 @@ import com.github.dansmithy.twitterlogin.service.SecretStore;
 import com.github.dansmithy.twitterlogin.service.TwitterService;
 import com.github.dansmithy.twitterlogin.service.TwitterUserStore;
 import com.github.dansmithy.twitterlogin.service.exception.TwitterAuthRuntimeException;
+import com.github.dansmithy.twitterlogin.service.scribe.ConfigurableTwitterApi;
 
 @Named
 public class ScribeTwitterService implements TwitterService {
@@ -44,7 +44,7 @@ public class ScribeTwitterService implements TwitterService {
 		super();
 		this.twitterUserStore = twitterUserStore;
 		this.roleProvider = roleProvider;
-		this.oauthService = new ServiceBuilder().provider(TwitterApi.Authenticate.class).apiKey(TWITTER_CONSUMER_KEY)
+		this.oauthService = new ServiceBuilder().provider(ConfigurableTwitterApi.class).apiKey(TWITTER_CONSUMER_KEY)
 				.apiSecret(secretStore.getConsumerKey()).callback(createCallback(secretStore.getBaseUrl(), TWITTER_CALLBACK_URL)).build();
 	}
 
