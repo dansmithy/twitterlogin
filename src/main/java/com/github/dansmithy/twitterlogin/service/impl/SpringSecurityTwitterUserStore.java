@@ -33,9 +33,6 @@ public class SpringSecurityTwitterUserStore implements TwitterUserStore {
 
 	@Override
 	public void rememberToken(OAuthToken token) {
-		if (getContext().getAuthentication() == null) {
-			throw new RuntimeException("No authentication");
-		}
 		setCurrentUser(new TwitterUser.PotentialTwitterUser(token));
 	}
 

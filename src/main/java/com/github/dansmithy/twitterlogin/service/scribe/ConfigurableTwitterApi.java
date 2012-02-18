@@ -25,7 +25,6 @@ public class ConfigurableTwitterApi extends TwitterApi.Authenticate {
 	public String getAuthorizationUrl(Token requestToken) {
 		String url = super.getAuthorizationUrl(requestToken);
 		return processTwitterUrl(url);
-		
 	}
 
 	@Override
