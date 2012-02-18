@@ -35,8 +35,8 @@ public class TwitterLoginAT {
 		
 		Assert.assertThat(requestTokenResponse.getStatusCode(), is(equalTo(HttpURLConnection.HTTP_MOVED_TEMP)));
 		
-		String location = requestTokenResponse.getHeader("location").getValue();
-		Assert.assertThat(location, is(equalTo(String.format("http://localhost:%d/oauth/authenticate?oauth_token=%s", ATUtils.getRestDriverPort(), requestToken))));
+		String twitterLoginUrl = requestTokenResponse.getHeader("location").getValue();
+		Assert.assertThat(twitterLoginUrl, is(equalTo(String.format("http://localhost:%d/oauth/authenticate?oauth_token=%s", ATUtils.getRestDriverPort(), requestToken))));
 		
 		String accessTokenReponseBody = String.format("oauth_token=%s&oauth_token_secret=%s&user_id=%s&screen_name=%s", accessToken, accessTokenSecret, userId, username);
 		clientDriver.addExpectation(onRequestTo("/oauth/access_token").withMethod(Method.POST), giveResponse(accessTokenReponseBody).withStatus(HttpURLConnection.HTTP_OK));

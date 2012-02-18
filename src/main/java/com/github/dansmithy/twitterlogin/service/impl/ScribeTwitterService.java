@@ -1,7 +1,5 @@
 package com.github.dansmithy.twitterlogin.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +12,7 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 import org.scribe.utils.OAuthEncoder;
 
+import com.github.dansmithy.twitterlogin.model.OAuthToken;
 import com.github.dansmithy.twitterlogin.model.TwitterUser;
 import com.github.dansmithy.twitterlogin.service.RoleProvider;
 import com.github.dansmithy.twitterlogin.service.SecretStore;
@@ -32,11 +31,6 @@ public class ScribeTwitterService implements TwitterService {
 
 	private final TwitterUserStore twitterUserStore;
 	private final OAuthService oauthService;
-
-	/**
-	 * This needs improving. Either put a single token in the session, or expire these tokens.
-	 */
-	private Map<String, Token> tokens = new HashMap<String, Token>();
 	private final RoleProvider roleProvider;
 
 	@Inject
@@ -51,19 +45,19 @@ public class ScribeTwitterService implements TwitterService {
 	@Override
 	public String getRedirectForAuthorization() {
 		Token requestToken = oauthService.getRequestToken();
-		tokens.put(requestToken.getToken(), requestToken);
+		twitterUserStore.rememberToken(OAuthToken.createFromToken(requestToken));
 		return oauthService.getAuthorizationUrl(requestToken);
 	}
 
 	@Override
 	public void authenticateUser(String tokenKey, String oauthVerifier) {
-		if (!tokens.containsKey(tokenKey)) {
-			throw new TwitterAuthRuntimeException(String.format("Attempt to validate authentication against an unknown token"));
+		Token requestToken = twitterUserStore.getOAuthToken().createToken();
+		if (tokenKey == null || !tokenKey.equals(requestToken.getToken())) {
+			throw new TwitterAuthRuntimeException(String.format("No token matching key [%s]", tokenKey));
 		}
-		Token requestToken = tokens.get(tokenKey);
 		Token accessToken = oauthService.getAccessToken(requestToken, new Verifier(oauthVerifier));
 		String screenName = extractUsingRegex(accessToken.getRawResponse(), SCREEN_NAME_REGEX);
-		TwitterUser twitterUser = new TwitterUser(screenName, accessToken, roleProvider.getRolesForUser(screenName));
+		TwitterUser twitterUser = new TwitterUser(screenName, OAuthToken.createFromToken(accessToken), roleProvider.getRolesForUser(screenName));
 		twitterUserStore.setCurrentUser(twitterUser);
 	}
 

@@ -4,35 +4,28 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.scribe.model.Token;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class TwitterUser implements UserDetails {
+public class TwitterUser implements Authentication {
 
 	public static TwitterUser EMPTY_USER = new TwitterUser(null, null, new String[0]);
 	
 	public static final String ROLE_USER = "user";
 	public static final String ROLE_ADMIN = "admin";
 	
-	private static String[] DEFAULT_ROLES = new String[] { ROLE_USER };
-	
 	private String username;
-	private Token accessToken;
+	private OAuthToken accessToken;
 	private final String[] roles;
 
-	
-	public TwitterUser(String username, Token accessToken) {
-		this(username, accessToken, DEFAULT_ROLES);
-	}
-	
-	public TwitterUser(String username, Token accessToken, String[] roles) {
+	public TwitterUser(String username, OAuthToken accessToken, String[] roles) {
 		super();
 		this.username = username;
 		this.accessToken = accessToken;
@@ -59,47 +52,57 @@ public class TwitterUser implements UserDetails {
 	}
 
 	@JsonIgnore
-	@Override
-	public String getPassword() {
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
-	}
-
-	@JsonIgnore
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@JsonIgnore
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@JsonIgnore
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@JsonIgnore
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	@JsonIgnore
-	public Token getAccessToken() {
+	public OAuthToken getAccessToken() {
 		return accessToken;
 	}
 
 	public String[] getRoles() {
 		return roles;
+	}
+
+	@JsonProperty("username")
+	@Override
+	public String getName() {
+		return username;
+	}
+
+	@JsonIgnore
+	@Override
+	public Object getCredentials() {
+		return getAccessToken();
+	}
+
+	@JsonIgnore
+	@Override
+	public Object getDetails() {
+		return null;
+	}
+
+	@JsonIgnore
+	@Override
+	public Object getPrincipal() {
+		return username;
+	}
+
+	@JsonIgnore
+	@Override
+	public boolean isAuthenticated() {
+		return getRoles().length > 0;
+	}
+
+	@Override
+	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+		throw new UnsupportedOperationException("Cannot change the authenticated status");
+	}
+	
+	public static class PotentialTwitterUser extends TwitterUser {
+
+		private static final String ANONYMOUS_ROLE = "ANONYMOUS";
+
+		public PotentialTwitterUser(OAuthToken requestToken) {
+			super(null, requestToken, new String[] { ANONYMOUS_ROLE });
+			
+		}
 	}
 
 }
